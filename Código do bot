@@ -1,0 +1,63 @@
+import discord
+from discord.ext import commands, tasks
+import datetime
+
+
+bot = commands.Bot("!")
+
+@bot.event
+async def on_ready():
+   print (f'estou pronto, estou conectado com {bot.user}')
+   corrent_time.start()
+# !oi
+@bot.command(name="oi")
+async def send_Hello(ctx):
+    name = ctx.author.name
+    
+    resposta = 'Olá, ' + name
+    
+    await ctx.send(resposta)
+    
+
+@bot.event
+async def on_message(message):
+  if message.author == bot.user:
+    return
+  
+  if ' cu' in message.content:
+    await message.channel.send(
+      f'porfavor {message.author.name} não ovenda seus amigos'
+    )
+    
+    await message.delete()
+    
+  await bot.process_commands(message)
+  
+@tasks.loop(seconds= 60)
+async def corrent_time():
+  now = datetime.datetime.now()  
+  now = now.strftime('%H:%M')
+  
+  channel = bot.get_channel(856531553337212949)
+  
+  await channel.send('Hora:⌚ ' + now)
+  
+@bot.command(name='calcula')
+async def nada_expression(ctx, expression):
+  respose = eval(expression)
+  await ctx.send('a resposta:é : ' + str(respose))
+
+  
+@bot.event
+async def on_reaction_add(reaction, user):
+  print (reaction.emoji)
+  while True:
+    if reaction.emoji == '👆':
+      role = user.guild.get_role(953787958828363796)
+      await user.add_roles(role)
+    elif reaction.emoji == '💩':
+        role = user.guild.get_role(953788057168003162)
+        await user.add_roles(role)
+  
+
+bot.run("senha")
